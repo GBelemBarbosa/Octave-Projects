@@ -45,13 +45,14 @@ legend("autoupdate", "off");
 last=[0,0];
 h=1/100;
 
-alfa=0.7;
+alfa=1;
 beta=2;
 a=-10/11;
 
 y_3_min=0;
 y_1_min=0;
 y_2_min=0;
+y_1_min_inv=0;
 
 if alfa>beta/2
     if alfa>=beta
@@ -103,7 +104,7 @@ if alfa>beta/2
 else
     #y_1 da menor órbita
     y_2_min=2*alfa-(2*a^2*beta - sqrt(4*a^4*beta^2 + 4*a^2*(4*alfa^2 - 8*alfa*beta + 3*beta^2)))/(2*a^2)
-    y_2_min_inv=y_2_min
+    y_2_min_inv=beta*(1+sqrt(1-a^2))
 
     y_max=max(y_2_min, y_2_min_inv)    
 endif
@@ -170,7 +171,7 @@ x_min=max([y_1_min, y_2_min, y_3_min])-1;
 plot([0, 0], [y_min-1, y_max_graph+1], "color", "black");
 plot([x_min, y_max], [0, 0], "color", "black");
 
-axis([x_min, y_max, y_min-1, y_max_graph+1], "equal")
+#axis([x_min, y_max, y_min-1, y_max_graph+1], "equal")
 
 print(hf, "prov.png");
 hold off;

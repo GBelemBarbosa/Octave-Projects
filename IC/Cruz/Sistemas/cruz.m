@@ -18,8 +18,8 @@ n_space=-t_space;
 
 #b_1
 data{1, 4}=[2; 1];
+#d=b_1*A_2^(-1)
 data{1, 3}=A_1\data{1, 4};
-#b_1*A_1^(-1)
 
 [data{2, 1}, data{2, 2}]=eig(A_2);
 

@@ -1,4 +1,4 @@
-a=-0.7;
+a=-10/11;
 
 A_1=[0,  -4/(4*a); a,  0];
 A_2=[0,  1; -1,  0];
@@ -25,7 +25,7 @@ data{1, 3}=A_1\data{1, 4};
 
 [data{2, 1}, data{2, 2}]=eig(A_2);
 
-alfa=1.5;
+alfa=3;
 #b_2
 data{2, 4}=[-alfa*x; alfa*y];
 #d=b_2*A_2^(-1)
@@ -46,18 +46,16 @@ function singularities=find_singularity(A_1, A_2, data)
 endfunction
 
 function point_res=quarter_poinc1(i, point, t_space, data, A)
-    alpha=real(data{2-mod(i,2), 2}(1,1));
-    beta=imag(data{2-mod(i,2), 2}(1,1));
     d=data{2-mod(i,2),3};
     A_m_diag_dif=A(1,1)-A(2,2);
     if i>2
             point_p_b=point+d(2);
-            x=@(t) exp(alpha*t)*(d(1)*(cos(beta*t)+A_m_diag_dif*sin(beta*t)/(2*beta))+point_p_b*A(1,2)*sin(beta*t)/beta)-d(1);
-            y=@(t) exp(alpha*t)*(point_p_b*(cos(beta*t)-A_m_diag_dif*sin(beta*t)/(2*beta))+d(1)*A(2,1)*sin(beta*t)/beta)-d(2);
+            x=@(t) d(1)*(cos(t)+A_m_diag_dif*sin(t)/2)+point_p_b*A(1,2)*sin(t)-d(1);
+            y=@(t) point_p_b*(cos(t)-A_m_diag_dif*sin(t)/2)+d(1)*A(2,1)*sin(t)-d(2);
     else
             point_p_b=point+d(1);
-            x=@(t) exp(alpha*t)*(point_p_b*(cos(beta*t)+A_m_diag_dif*sin(beta*t)/(2*beta))+d(2)*A(1,2)*sin(beta*t)/beta)-d(1);
-            y=@(t) exp(alpha*t)*(d(2)*(cos(beta*t)-A_m_diag_dif*sin(beta*t)/(2*beta))+point_p_b*A(2,1)*sin(beta*t)/beta)-d(2);
+            x=@(t) point_p_b*(cos(t)+A_m_diag_dif*sin(t)/2)+d(2)*A(1,2)*sin(t)-d(1);
+            y=@(t) d(2)*(cos(t)-A_m_diag_dif*sin(t)/2)+point_p_b*A(2,1)*sin(t)-d(2);
     endif
     
     #Busca da inversao
@@ -115,14 +113,11 @@ function y_3=cycle1(y_1, t_space, data, A_1, A_2)
 endfunction
 
 function point_res=quarter_poinc3(i, point, t_space, data, A)
-    alpha=real(data{2-mod(i,2), 2}(1,1));
-    beta=imag(data{2-mod(i,2), 2}(1,1));
-    d=data{mod(i,3)+1,3};
-    gamma=alpha/beta;
+    d=data{i,3};
     A_m_diag_dif=A(1,1)-A(2,2);
     point_p_b=point+d(2);
-    x=@(t) exp(alpha*t)*(d(1)*(cos(beta*t)+A_m_diag_dif*sin(beta*t)/(2*beta))+point_p_b*A(1,2)*sin(beta*t)/beta)-d(1);
-    y=@(t) exp(alpha*t)*(point_p_b*(cos(beta*t)-A_m_diag_dif*sin(beta*t)/(2*beta))+d(1)*A(2,1)*sin(beta*t)/beta)-d(2);
+    x=@(t) d(1)*(cos(t)+A_m_diag_dif*sin(t)/2)+point_p_b*A(1,2)*sin(t)-d(1);
+    y=@(t) point_p_b*(cos(t)-A_m_diag_dif*sin(t)/2)+d(1)*A(2,1)*sin(t)-d(2);
     
     #Busca da inversao
     t_inv=0;
@@ -132,7 +127,7 @@ function point_res=quarter_poinc3(i, point, t_space, data, A)
         X=x(t);
         line([last(1), X], [last(2), Y], "color", "black", "linewidth", 1.5)
         last=[X, Y];
-        if ((X*(i-2)<0) && (t!=0))
+        if ((X*(1.5-i)<0) && (t!=0))
             t_inv=t
             break;
         end
@@ -150,24 +145,21 @@ function point_res=quarter_poinc3(i, point, t_space, data, A)
 endfunction
 
 function cycle_res=cycle3(y_1, t_space, data, A_1, A_2)
-    y_2=quarter_poinc3(1, y_1, t_space, data, A_2);
-    y_3=quarter_poinc3(3, y_2, t_space, data, A_1);
+    y_2=quarter_poinc3(2, y_1, t_space, data, A_2);
+    y_3=quarter_poinc3(1, y_2, t_space, data, A_1);
 endfunction
 
 function point_res=quarter_poinc2(i, point, t_space, data, A)
-    alpha=real(data{2-mod(i,2), 2}(1,1));
-    beta=imag(data{2-mod(i,2), 2}(1,1));
     d=data{2-mod(i,2),3};
-    gamma=alpha/beta;
     A_m_diag_dif=A(1,1)-A(2,2);
     if !mod(i,2)
             point_p_b=point+d(2);
-            x=@(t) exp(alpha*t)*(d(1)*(cos(beta*t)+A_m_diag_dif*sin(beta*t)/(2*beta))+point_p_b*A(1,2)*sin(beta*t)/beta)-d(1);
-            y=@(t) exp(alpha*t)*(point_p_b*(cos(beta*t)-A_m_diag_dif*sin(beta*t)/(2*beta))+d(1)*A(2,1)*sin(beta*t)/beta)-d(2);
+            x=@(t) d(1)*(cos(t)+A_m_diag_dif*sin(t)/2)+point_p_b*A(1,2)*sin(t)-d(1);
+            y=@(t) point_p_b*(cos(t)-A_m_diag_dif*sin(t)/2)+d(1)*A(2,1)*sin(t)-d(2);
     else
             point_p_b=point+d(1);
-            x=@(t) exp(alpha*t)*(point_p_b*(cos(beta*t)+A_m_diag_dif*sin(beta*t)/(2*beta))+d(2)*A(1,2)*sin(beta*t)/beta)-d(1);
-            y=@(t) exp(alpha*t)*(d(2)*(cos(beta*t)-A_m_diag_dif*sin(beta*t)/(2*beta))+point_p_b*A(2,1)*sin(beta*t)/beta)-d(2);
+            x=@(t) exp(alpha*t)*(point_p_b*(cos(t)+A_m_diag_dif*sin(t)/2)+d(2)*A(1,2)*sin(t))-d(1);
+            y=@(t) exp(alpha*t)*(d(2)*(cos(t)-A_m_diag_dif*sin(t)/2)+point_p_b*A(2,1)*sin(t))-d(2);
     endif
     
     #Busca da inversao
@@ -258,24 +250,25 @@ else
     text(singularities(1,1)+c, singularities(1,2)-c, "A_1=A_2");
 end
 
-y=beta*(1+sqrt(1-a^2))
-text(-2*c, y, "y_{min}^{1*}");
+#y=beta*(1+sqrt(1-a^2))
+#text(-2*c, y, "y_{min}^{1*}");
 #cycle1(beta+sqrt(beta^2*(1-a^2)), n_space, data, A_1, A_2)
 
-y=2*alfa-beta + sqrt(beta^2 + a^2*(4*alfa^2 - 8*alfa*beta + 3*beta^2));
-cycle1(y, n_space, data, A_1, A_2)
-text(c, y, "y_{min}^1");
+#y=2*alfa-beta + sqrt(beta^2 + a^2*(4*alfa^2 - 8*alfa*beta + 3*beta^2));
+#cycle1(y, n_space, data, A_1, A_2)
+#text(c, y, "y_{min}^1");
 
-y=2*alfa+0.001;
-cycle2(y, n_space, data, A_1, A_2)
-text(c, y, "y_{lim}^{1-2}");
+#y=2*alfa+0.001;
+#y=2*alfa-(2*a^2*beta - sqrt(4*a^4*beta^2 + 4*a^2*(4*alfa^2 - 8*alfa*beta + 3*beta^2)))/(2*a^2);
+#cycle2(y, n_space, data, A_1, A_2)
+#text(c, y, "y_{lim}^{1-2}");
 
 #cycle2(2*alfa+1, n_space, data, A_1, A_2)
     
 #cycle2(2*alfa-(2*a^2*beta - sqrt(4*a^4*beta^2 + 4*a^2*(4*alfa^2 - 8*alfa*beta + 3*beta^2)))/(2*a^2), n_space, data, A_1, A_2)
 
-#cycle3(2*alfa-beta+sqrt(-beta^2*(a^2-1)), n_space, data, A_1, A_2)
-#cycle3(4.01, n_space, data, A_1, A_2)
+cycle3(2*alfa-beta+sqrt(-beta^2*(a^2-1)), n_space, data, A_1, A_2)
+cycle3(4.01, n_space, data, A_1, A_2)
 
 
 
