@@ -45,9 +45,9 @@ legend("autoupdate", "off");
 last=[0,0];
 h=1/100;
 
-alfa=1;
+alfa=-1;
 beta=2;
-a=-10/11;
+a=-0.8;
 
 y_3_min=0;
 y_1_min=0;
@@ -159,11 +159,15 @@ if y_3_min || y_1_min
 endif
 
 if y_2_min
-    y_max_graph=max(cycle_2(y_2_min, alfa, beta, a), cycle_2(y_max, alfa, beta, a));
-    y_min=min(cycle_2(y_2_min, alfa, beta, a), cycle_2(y_max, alfa, beta, a));
+    y_max_graph=max([real(cycle_2(y_2_min, alfa, beta, a)), cycle_2(y_2_min_inv, alfa, beta, a), cycle_2(y_max, alfa, beta, a)]);
+    y_max_graph=0.0594
+    y_min=min(real(cycle_2(y_2_min, alfa, beta, a)), cycle_2(y_max, alfa, beta, a));
     
     line([y_2_min, y_2_min], [y_min-1, y_max_graph+1], "linestyle", "--", "color", "black", "linewidth", 1.5)
-    text(y_2_min+c, y_max_graph+c, "y_{lim}^{1-2}");
+    text(y_2_min+c, y_max_graph+2*c, "y_{lim}^{1-2}");
+    
+    #line([y_2_min_inv, y_2_min_inv], [y_min-1, y_max_graph+1], "linestyle", "--", "color", "black", "linewidth", 1.5)
+    #text(y_2_min_inv+c, y_max_graph+2*c, "y_{min}^*");
 endif
   
 x_min=max([y_1_min, y_2_min, y_3_min])-1;
@@ -171,7 +175,7 @@ x_min=max([y_1_min, y_2_min, y_3_min])-1;
 plot([0, 0], [y_min-1, y_max_graph+1], "color", "black");
 plot([x_min, y_max], [0, 0], "color", "black");
 
-#axis([x_min, y_max, y_min-1, y_max_graph+1], "equal")
+axis([x_min, y_max, y_min-1, y_max_graph+1], "equal")
 
 print(hf, "prov.png");
 hold off;

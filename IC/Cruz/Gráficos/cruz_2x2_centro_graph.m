@@ -45,9 +45,9 @@ legend("autoupdate", "off");
 last=[0,0];
 h=1/100;
 
-alfa=2;
+alfa=0.9;
 beta=2;
-a=-1/2;
+a=-0.9;
 
 y_3_min=0;
 y_1_min=0;

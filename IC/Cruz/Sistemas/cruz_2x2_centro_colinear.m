@@ -1,7 +1,7 @@
-a=-10/11;
+a=-sqrt(0.8);
 
-A_1=[0,  -4/(4*a); a,  0];
-A_2=[0,  1; -1,  0];
+A_1=[0,  -1/a; a,  0];
+A_2=[0,  -1/a; a,  0];
 
 #Se for no sentido horario, colocar t_space decrescente (<=0)
 data=cell(2, 4);
@@ -14,20 +14,20 @@ n_space=-t_space;
 
 [data{1, 1}, data{1, 2}]=eig(A_1);
 
-x=1;
-y=1;
+x=-1;
+y=-a;
 
 beta=2;
 #b_1
-data{1, 4}=[beta*x*4/(4*a); -beta*y*a];
+data{1, 4}=[beta*x/a; -beta*y*a];
 data{1, 3}=A_1\data{1, 4};
 #b_1*A_1^(-1)
 
 [data{2, 1}, data{2, 2}]=eig(A_2);
 
-alfa=3;
+alfa=1;
 #b_2
-data{2, 4}=[-alfa*x; alfa*y];
+data{2, 4}=[alfa*x; alfa*y];
 #d=b_2*A_2^(-1)
 data{2, 3}=A_2\data{2, 4};
 
@@ -158,8 +158,8 @@ function point_res=quarter_poinc2(i, point, t_space, data, A)
             y=@(t) point_p_b*(cos(t)-A_m_diag_dif*sin(t)/2)+d(1)*A(2,1)*sin(t)-d(2);
     else
             point_p_b=point+d(1);
-            x=@(t) exp(alpha*t)*(point_p_b*(cos(t)+A_m_diag_dif*sin(t)/2)+d(2)*A(1,2)*sin(t))-d(1);
-            y=@(t) exp(alpha*t)*(d(2)*(cos(t)-A_m_diag_dif*sin(t)/2)+point_p_b*A(2,1)*sin(t))-d(2);
+            x=@(t) point_p_b*(cos(t)+A_m_diag_dif*sin(t)/2)+d(2)*A(1,2)*sin(t)-d(1);
+            y=@(t) d(2)*(cos(t)-A_m_diag_dif*sin(t)/2)+point_p_b*A(2,1)*sin(t)-d(2);
     endif
     
     #Busca da inversao
@@ -227,7 +227,7 @@ singularities=find_singularity(A_1, A_2, data);
 
 if type
     for i=1:length(tangents)
-        if mod(i, 2)
+        if mod(i,2)
             scatter(0, tangents(i), "filled", "markerfacecolor", "k");
             text(0+c, tangents(i)-c, strcat('Ã_', num2str(round(i/2)), '^y'));
         else
@@ -252,7 +252,7 @@ end
 
 #y=beta*(1+sqrt(1-a^2))
 #text(-2*c, y, "y_{min}^{1*}");
-#cycle1(beta+sqrt(beta^2*(1-a^2)), n_space, data, A_1, A_2)
+#cycle1(3, n_space, data, A_1, A_2)
 
 #y=2*alfa-beta + sqrt(beta^2 + a^2*(4*alfa^2 - 8*alfa*beta + 3*beta^2));
 #cycle1(y, n_space, data, A_1, A_2)
@@ -263,16 +263,18 @@ end
 #cycle2(y, n_space, data, A_1, A_2)
 #text(c, y, "y_{lim}^{1-2}");
 
-#cycle2(2*alfa+1, n_space, data, A_1, A_2)
-    
+cycle2(5, n_space, data, A_1, A_2)
+#cycle2(0.01, n_space, data, A_1, A_2)    
+#cycle2(1.01, n_space, data, A_1, A_2)    
+#cycle2(2, n_space, data, A_1, A_2)   
 #cycle2(2*alfa-(2*a^2*beta - sqrt(4*a^4*beta^2 + 4*a^2*(4*alfa^2 - 8*alfa*beta + 3*beta^2)))/(2*a^2), n_space, data, A_1, A_2)
 
-cycle3(2*alfa-beta+sqrt(-beta^2*(a^2-1)), n_space, data, A_1, A_2)
-cycle3(4.01, n_space, data, A_1, A_2)
+#cycle3(2*alfa-beta+sqrt(-beta^2*(a^2-1)), n_space, data, A_1, A_2)
+#cycle3(4.01, n_space, data, A_1, A_2)
 
 
 
-axis([-1,5.5,-1,5], "equal")
+axis([-7.5,5,-5.5,5.5], "equal")
 
 print(hf, "prov.png");
 hold off;
