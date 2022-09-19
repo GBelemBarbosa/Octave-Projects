@@ -26,7 +26,7 @@ E=zeros(3, 3);
 
 norm_E=norm(E);
 
-vects=eye(3)
+vects=eye(3);
 epsiAux=0.1*epsi
 for i=1:10
   figure
